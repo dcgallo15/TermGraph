@@ -2,6 +2,7 @@
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdbool.h>
 
 // TODO: ensure this doesn't compile each time `make` is run!
 #include "../res/tuibox.h"
@@ -28,6 +29,20 @@ void outputData(void) {
 	}
 }
 
+void scaleDataForConsoleSize(void) {
+    for(size_t y = 0; y < HEIGHT + 1; ++y) {
+        for(size_t x = 0; x < WIDTH; ++x) {
+            if (data[y*WIDTH + x] == '*' && data[(y+1)*WIDTH + x] == '*') {
+                data[(y)*WIDTH + x] = '*';
+            } else if (data[(y+1)*WIDTH + x] == '*') {
+                data[(y)*WIDTH + x] = '_';
+            } else if (data[(y)*WIDTH + x] == '*' && data[(y+1)*WIDTH + x] != '*') {
+                data[(y)*WIDTH + x] = '^';
+            }
+        }
+    }
+}
+
 // 32x32 grid
 // (0,0) is (16, 16)
 // NOTE: will need to change to floating point co-ords at some point
@@ -40,17 +55,62 @@ void circleExample(double r) {
 			int transformY = y - (HEIGHT / 2);
             // use <= for filled in circle
 			if(pow(transformX, 2) + (pow(transformY, 2)) <= pow(r, 2)) {
-                printf("%d, %d\n", x, y);
                 data[y*WIDTH + x] = '*';
             }
         }
 	}
-    printf("%d\n", data[526]);
+}
+
+// TODO: fix direction of parabolaExample
+void parabolaExample(void) {
+	for(int y = 0; y < HEIGHT; ++y) {
+		for(int x = 0; x < WIDTH; ++x) {
+			// Can change these depending on the centering
+			int transformX = x - (WIDTH / 2);
+			int transformY = y - (HEIGHT / 2);
+			if(pow(transformX, 2) == transformY) {
+                data[y*WIDTH + x] = '*';
+            }
+        }
+	}
+}
+
+void drawYLine(int m, int c) {
+	for(int y = 0; y < HEIGHT; ++y) {
+		for(int x = 0; x < WIDTH; ++x) {
+			// Can change these depending on the centering
+			int transformX = x - (WIDTH / 2);
+			int transformY = y - (HEIGHT / 2);
+			if(m*transformX + c == transformY) {
+                data[y*WIDTH + x] = '*';
+            }
+        }
+    }
+}
+
+void drawXLine(int m, int c) {
+	for(int y = 0; y < HEIGHT; ++y) {
+		for(int x = 0; x < WIDTH; ++x) {
+			// Can change these depending on the centering
+			int transformX = x - (WIDTH / 2);
+			int transformY = y - (HEIGHT / 2);
+			if(transformX == transformY*m + c) {
+                data[y*WIDTH + x] = '*';
+            }
+        }
+    }
+}
+void drawAxes(void) {
+    drawYLine(0, 0);
+    drawXLine(0, 0);
 }
 
 int main(void) {
 	setData(' ');
-	circleExample(2);
-	outputData();
+	//circleExample(4);
+    parabolaExample();
+    //drawAxes();
+    scaleDataForConsoleSize();
+    outputData();
 	return 0;
 }
