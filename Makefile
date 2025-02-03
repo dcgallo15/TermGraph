@@ -14,11 +14,11 @@ CFLAGS := -std=gnu17 -Wall -Wextra -pedantic
 LDFLAGS := -lm
 
 $(NAME): all $(OBJS)
-	$(CC) $(CFLAGS) $(LDFLAGS) -o $(BIN_DIR)/$@ $(patsubst %, build/%, $(OBJS))
+	$(CC) $(CFLAGS) -o $(BIN_DIR)/$@ $(patsubst %, build/%, $(OBJS)) $(LDFLAGS)
 
 $(OBJS): dir
 	@mkdir -p $(BUILD_DIR)/$(@D)
-	@$(CC) $(CFLAGS) -o $(BUILD_DIR)/$@ -c $*.c
+	@$(CC) $(CFLAGS) $(LDFLAGS) -o $(BUILD_DIR)/$@ -c $*.c
 
 # Setup build and bin directories
 dir:
